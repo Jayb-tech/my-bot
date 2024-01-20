@@ -345,7 +345,7 @@ logging.basicConfig(filename='bot.log', level=logging.DEBUG)
 app = Flask(__name__)
 
 def run():
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8080)
 
 def keep_alive():
     t = Thread(target=run)
