@@ -355,7 +355,7 @@ if __name__ == "__main__":
     bot_file_name = "main"
     bot_class_name = "Bot"
     room_id = "65a8236a0aa6b497a9b328a8"
-    bot_token = "a1e3b424eebb508e186cc788c035cdce40ab7a0d410bdd4a4d5ac7afdb6be084"
+    bot_token = "480d69a2bc2440c9df71f24e59c6ad2e22490730511f3cc32cd0627e2bd56bbd"
 
     my_bot = BotDefinition(getattr(import_module(bot_file_name), bot_class_name)(), room_id, bot_token)
 
