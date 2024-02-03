@@ -61,77 +61,92 @@ class Bot(BaseBot):
         logging.info(f"{user.username} joined the room at {position}")
 
 
-    emote_dict = {"angry": "emoji-angry", 
-      "thumbsup": "emoji-thumbsup", 
-      "hello": "emote-hello", 
-      "tired": "emote-tired", 
-      "dance": "dance-macarena",
-      "loopsit": "idle-loop-sitfloor",
-      "weird": "dance-weird",
-      "laugh": "emote-laughing",
-      "kiss": "emote-kiss",
-      "wave": "emote-wave",
-      "teleport": "emote-teleporting",
-      "hot": "emote-hot",
-      "shopping": "dance-shoppingcart",
-      "greedy": "emote-greedy",
-      "float": "emote-float", 
-      "yes": "emote-yes",
-      "celebrate": "emoji-celebrate",
-      "no": "emote-no",
-      "swordfight": "emote-swordfight",
-      "shy": "emote-shy",
-      "tiktok2": "dance-tiktok2",
-      "charging": "emote-charging",
-      "worm": "emote-snake",
-      "russian": "dance-russian",
-      "sad": "emote-sad",
-      "cursing": "emoji-cursing",
-      "flex": "emoji-flex",
-      "gagging": "emoji-gagging",
-      "tiktok8": "dance-tiktok8",
-      "kpop": "dance-blackpink",
-      "pennywise": "dance-pennywise",
-      "bow": "emote-bow",
-      "curtsy": "emote-curtsy",
-      "snowangel": "emote-snowangel",
-      "energyball": "emote-energyball",
-      "frog": "emote-frog",
-      "cute": "emote-cute",
-      "tiktok9": "dance-tiktok9",
-      "shuffle": "dance-tiktok10",
-      "pose7": "emote-pose7",
-      "pose8": "emote-pose8",
-      "casual": "idle-dance-casual",
-      "pose1": "emote-pose1",
-      "pose3": "emote-pose3",
-      "pose5": "emote-pose5",
-      "cutey": "emote-cutey",
-      "model": "emote-model",
-      "astro":"emote-astronaut",
-      "guitar":"emote-punkguitar",
-      "fashionista":"emote-fashionista",
-      "uwu":"idle-uwu",
-      "wrong":"dance-wrong",
-      "sayso":"idle-dance-tiktok4",
-      "maniac":"emote-maniac",
-      "enthused":"idle-enthusiastic",
-      "happy":"emote-happy",
-      "timejump":"emote-timejump",
-      "creepy":"dance-creepypuppet",
-      "sleigh":"emote-sleigh",
-      "singing":"idle_singing",
-      "anime":"dance-anime",
-      "hyped":"emote-hyped",
-      "jinglebell":"dance-jinglebell",
-      "snowball":"emote-snowball",
+    emote_dict = {
+        "angry": {"emote": "emoji-angry", "delay": 10},
+        "thumbsup": {"emote": "emoji-thumbsup", "delay": 10},
+        "hello": {"emote": "emote-hello", "delay": 10},
+        "tired": {"emote": "emote-tired", "delay": 10},
+        "dance": {"emote": "dance-macarena", "delay": 12.5},
+        "loopsit": {"emote": "idle-loop-sitfloor", "delay": 10},
+        "weird": {"emote": "dance-weird", "delay": 22},
+        "laugh": {"emote": "emote-laughing", "delay": 3},
+        "kiss": {"emote": "emote-kiss", "delay": 3},
+        "wave": {"emote": "emote-wave", "delay": 10},
+        "teleport": {"emote": "emote-teleporting", "delay": 12.5},
+        "hot": {"emote": "emote-hot", "delay": 4.8},
+        "shopping": {"emote": "dance-shoppingcart", "delay": 5},
+        "greedy": {"emote": "emote-greedy", "delay": 4.8},
+        "float": {"emote": "emote-float", "delay": 9.3},
+        "yes": {"emote": "emote-yes", "delay": 10},
+        "celebrate": {"emote": "emoji-celebrate", "delay": 4},
+        "no": {"emote": "emote-no", "delay": 10},
+        "swordfight": {"emote": "emote-swordfight", "delay": 6},
+        "shy": {"emote": "emote-shy", "delay": 10},
+        "tiktok2": {"emote": "dance-tiktok2", "delay": 11},
+        "charging": {"emote": "emote-charging", "delay": 8.5},
+        "worm": {"emote": "emote-snake", "delay": 6},
+        "russian": {"emote": "dance-russian", "delay": 10.3},
+        "sad": {"emote": "emote-sad", "delay": 10},
+        "cursing": {"emote": "emoji-cursing", "delay": 2.5},
+        "flex": {"emote": "emoji-flex", "delay": 3},
+        "gagging": {"emote": "emoji-gagging", "delay": 6},
+        "tiktok8": {"emote": "dance-tiktok8", "delay": 11},
+        "kpop": {"emote": "dance-blackpink", "delay": 7},
+        "pennywise": {"emote": "dance-pennywise", "delay": 1.5},
+        "bow": {"emote": "emote-bow", "delay": 3.3},
+        "curtsy": {"emote": "emote-curtsy", "delay": 2.8},
+        "snowangel": {"emote": "emote-snowangel", "delay": 6.8},
+        "energyball": {"emote": "emote-energyball", "delay": 8.3},
+        "frog": {"emote": "emote-frog", "delay": 15},
+        "cute": {"emote": "emote-cute", "delay": 7.3},
+        "tiktok9": {"emote": "dance-tiktok9", "delay": 13},
+        "shuffle": {"emote": "dance-tiktok10", "delay": 9},
+        "pose7": {"emote": "emote-pose7", "delay": 5.3},
+        "pose8": {"emote": "emote-pose8", "delay": 4.6},
+        "casual": {"emote": "idle-dance-casual", "delay": 9.7},
+        "pose1": {"emote": "emote-pose1", "delay": 3},
+        "pose3": {"emote": "emote-pose3", "delay": 4.7},
+        "pose5": {"emote": "emote-pose5", "delay": 5},
+        "cutey": {"emote": "emote-cutey", "delay": 3.5},
+        "model": {"emote": "emote-model", "delay": 6.3},
+        "astro": {"emote": "emote-astronaut", "delay": 0},  # No delay specified, set to 0
+        "guitar": {"emote": "emote-punkguitar", "delay": 10},
+        "fashionista": {"emote": "emote-fashionista", "delay": 6},
+        "uwu": {"emote": "idle-uwu", "delay": 25},
+        "wrong": {"emote": "dance-wrong", "delay": 13},
+        "sayso": {"emote": "idle-dance-tiktok4", "delay": 16},
+        "maniac": {"emote": "emote-maniac", "delay": 5.5},
+        "enthused": {"emote": "idle-enthusiastic", "delay": 16.5},
+        "happy": {"emote": "emote-happy", "delay": 0},  # No delay specified, set to 0
+        "timejump": {"emote": "emote-timejump", "delay": 0},  # No delay specified, set to 0
+        "creepy": {"emote": "dance-creepypuppet", "delay": 10},
+        "sleigh": {"emote": "emote-sleigh", "delay": 0},  # No delay specified, set to 0
+        "singing": {"emote": "idle_singing", "delay": 11},
+        "anime": {"emote": "dance-anime", "delay": 0},  # No delay specified, set to 0
+        "hyped": {"emote": "emote-hyped", "delay": 0},  # No delay specified, set to 0
+        "jinglebell": {"emote": "dance-jinglebell", "delay": 0},  # No delay specified, set to 0
+        "snowball": {"emote": "emote-snowball", "delay": 6},
     }
+
 
     def _get_emote_commands_list(self):
         emotes_list = list(self.emote_dict.keys())
         unique_emotes = set(emotes_list)  
         formatted_list = ', '.join(unique_emotes)
         return f"You can use the following emotes: {formatted_list}. Just type the emote you want to use in the chat!"
+
+  
+    async def send_emote_continuously(self, emote_data: dict, user_id: int) -> None:
+      try:
+          while user_id in self.user_loops:
+              await self.highrise.send_emote(emote_data["emote"], user_id)
+              await asyncio.sleep(emote_data["delay"])
+      except asyncio.CancelledError:
+          pass
+      except Exception as e:
+          print(f"An error occurred in send_emote_continuously: {e}")
+          self.user_loops.pop(user_id, None)
+
   
     async def on_user_move(self, user: User, pos: Position) -> None:
       """On a user moving in the room."""
@@ -140,41 +155,43 @@ class Bot(BaseBot):
           adjusted_pos = Position(x=pos.x + 2, y=pos.y, z=pos.z, facing=pos.facing)
           await self.highrise.walk_to(adjusted_pos)
           print(adjusted_pos)
-     
+
 
     async def on_whisper(self, user: User, message: str) -> None:
       print(f"[WHISPER] {user.username}: {message}")
       if user.username.lower() in ["iced_yu", "m.jamie"]:
           message = message.strip().lower()
           if message == "stop":
-              # Cancel all ongoing loops for all users
-              for _user_id, loop_data in list(self.user_loops.items()):
-                  loop_data['loop'].cancel()
-              self.user_loops = {}  # Clear the loops dictionary
+            # Cancel all ongoing loops for all users
+            for _user_id, loop_data in list(self.user_loops.items()):
+                loop_data['loop'].cancel()
+            self.user_loops = {}  # Clear the loops dictionary
           else:
-              words = message.split()
-              if words and words[0] in self.emote_dict:
-                  command = self.emote_dict[words[0]]
-                  if len(words) > 1 and words[1] == "loop":
-                      # Loop command detected, initiate emote loop for all users
-                      room_users_res = await self.highrise.get_room_users()
-                      for item in room_users_res.content:
-                          room_user = item[0]
-                          if room_user.id not in self.user_loops:
-                              loop_task = asyncio.create_task(
-                                  self.send_emote_continuously(command, room_user.id))
-                              self.user_loops[room_user.id] = {
-                                  'command': command,
-                                  'loop': loop_task
-                              }
-                      # Notify all users that the emote loop has started
-                      await self.highrise.chat(f"Emote loop for '{words[0]}' started by {user.username}.")
-                  elif not words[1:]:
-                      # If no additional commands after the emote, send it once
-                      room_users_res = await self.highrise.get_room_users()
-                      for item in room_users_res.content:
-                          room_user = item[0]
-                          await self.highrise.send_emote(command, room_user.id)
+            words = message.split()
+            if words and words[0] in self.emote_dict:
+                command = self.emote_dict[words[0]]
+                if len(words) > 1 and words[1] == "loop":
+                    # Loop command detected, initiate emote loop for all users
+                    room_users_res = await self.highrise.get_room_users()
+                    for item in room_users_res.content:
+                        room_user = item[0]
+                        if room_user.id not in self.user_loops:
+                            loop_task = asyncio.create_task(
+                                self.send_emote_continuously(command, room_user.id))
+                            self.user_loops[room_user.id] = {
+                                'command': command,
+                                'loop': loop_task
+                            }
+                    # Notify all users that the emote loop has started
+                    await self.highrise.chat(f"Emote loop for '{words[0]}' started by {user.username}.")
+                elif not words[1:]:
+                    # If no additional commands after the emote, send it once
+                    room_users_res = await self.highrise.get_room_users()
+                    for item in room_users_res.content:
+                        room_user = item[0]
+                        await self.highrise.send_emote(command["emote"], room_user.id)
+
+
 
 
       async def following_loop():
@@ -210,18 +227,7 @@ class Bot(BaseBot):
       else:
           await self.highrise.chat("Not following anyone")
 
-    async def send_emote_continuously(self, emote_command: str, user_id: int) -> None:
-      try:
-          while user_id in self.user_loops:
-              await self.highrise.send_emote(emote_command, user_id)
-              await asyncio.sleep(0)  # Consider increasing the sleep duration if needed
-      except asyncio.CancelledError:
-          # This exception is expected when cancellation happens, so you can pass here
-          pass
-      except Exception as e:
-          print(f"An error occurred in send_emote_continuously: {e}")
-          # If necessary, remove the user from the user_loops to avoid further attempts to emote
-          self.user_loops.pop(user_id, None)
+    
 
 
     async def on_chat(self, user: User, message: str) -> None:
@@ -366,5 +372,6 @@ if __name__ == "__main__":
         except Exception as e:
             logging.error(f"An exception occurred in the main loop: {e}")
             time.sleep(2)
+
 
   
