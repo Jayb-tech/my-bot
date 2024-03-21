@@ -4,7 +4,7 @@ import sys
 from asyncio import run as arun
 from highrise.__main__ import *
 import time
-from flask import Flask 
+from flask import Flask
 from threading import Thread
 from highrise import *
 from highrise.models import *
@@ -35,6 +35,7 @@ from highrise.models import (
     SessionMetadata,
     User,
 )
+
 
 vip = ["iced_yu", "raavitheriver", "QueenKirsty02", "Vulps", "PunkAngel3", "yankii_gg"]
 
@@ -327,5 +328,3 @@ while True:
       except Exception as e:
           print(f"An exception occourred: {e}")
           time.sleep(2)
-
-  
