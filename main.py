@@ -36,106 +36,104 @@ from highrise.models import (
     User,
 )
 
-vip = ["iced_yu", "raavitheriver", "Vulps", "Eve07_98", "Evy2025"]
+vip = ["iced_yu", "raavitheriver", "QueenKirsty02", "Vulps", "PunkAngel3", "yankii_gg"]
+
 
 class Bot(BaseBot):
-
+     
     def __init__(self):
-        self.user_teleport_position = Position(x=10.5, y=0.0, z=9.5, facing='FrontLeft')
-        self.user_teleport_position2 = Position(x=5.5, y=9.0, z=2.5, facing='FrontRight')
-        self.user_teleport_position3 = Position(x=16.5, y=15.0, z=14.5, facing='FrontLeft')
+        self.user_teleport_position = Position(x=1.5, y=0.25, z=14.5, facing='FrontRight')
+        self.user_teleport_position2 = Position(x=5.5, y=10.0, z=3.5, facing='FrontRight')
+        self.user_teleport_position3 = Position(x=10.5, y=14.75, z=4.5, facing='FrontLeft')
         self.user_loops = {}
-        self.following_task = None
-
+        self.position_emote_state = {}  # Dictionary to track emote state per position
 
     async def on_start(self, session_metadata: SessionMetadata) -> None:
-        logging.info("Bot is alive.")
-        await self.highrise.teleport(session_metadata.user_id, Position(x=3.5, y=0.25, z=13.5, facing='FrontRight'))
+        print("hi im alive?")
+        self.highrise.tg.create_task(self.highrise.teleport(
+            session_metadata.user_id, Position(x=13.5, y=1.0, z=6.5, facing='FrontRight')))
 
+    # Fix indentation for on_user_join method
     async def on_user_join(self, user: User, position: Position | AnchorPosition) -> None:
-        try:
-            welcome_message = f"Bienvenido/a a la sala, {user.username} ¡Para ver la lista de emotes, escribe 'emotes' en el chat!"
-            pass
-        except Exception as e:
-            logging.error(f"An error occurred in on_user_join: {e}")
-        logging.info(f"{user.username} joined the room at {position}")
-
+        await self.highrise.chat(f"Welcome to Club Euphoria, {user.username}!  To see the list of emotes, simply type emotes in the chat.")
 
     emote_dict = {
-        "angry": {"emote": "emoji-angry", "delay": 10},
-        "thumbsup": {"emote": "emoji-thumbsup", "delay": 10},
-        "hello": {"emote": "emote-hello", "delay": 10},
-        "tired": {"emote": "emote-tired", "delay": 10},
-        "dance": {"emote": "dance-macarena", "delay": 12.5},
-        "loopsit": {"emote": "idle-loop-sitfloor", "delay": 10},
-        "weird": {"emote": "dance-weird", "delay": 22},
-        "laugh": {"emote": "emote-laughing", "delay": 3},
-        "kiss": {"emote": "emote-kiss", "delay": 3},
-        "wave": {"emote": "emote-wave", "delay": 10},
-        "teleport": {"emote": "emote-teleporting", "delay": 12.5},
-        "hot": {"emote": "emote-hot", "delay": 4.8},
-        "shopping": {"emote": "dance-shoppingcart", "delay": 5},
-        "greedy": {"emote": "emote-greedy", "delay": 4.8},
-        "float": {"emote": "emote-float", "delay": 9.3},
-        "yes": {"emote": "emote-yes", "delay": 10},
-        "celebrate": {"emote": "emoji-celebrate", "delay": 4},
-        "no": {"emote": "emote-no", "delay": 10},
-        "swordfight": {"emote": "emote-swordfight", "delay": 6},
-        "shy": {"emote": "emote-shy", "delay": 10},
-        "tiktok2": {"emote": "dance-tiktok2", "delay": 11},
-        "charging": {"emote": "emote-charging", "delay": 8.5},
-        "worm": {"emote": "emote-snake", "delay": 6},
-        "russian": {"emote": "dance-russian", "delay": 10.3},
-        "sad": {"emote": "emote-sad", "delay": 10},
-        "cursing": {"emote": "emoji-cursing", "delay": 2.5},
-        "flex": {"emote": "emoji-flex", "delay": 3},
-        "gagging": {"emote": "emoji-gagging", "delay": 6},
-        "tiktok8": {"emote": "dance-tiktok8", "delay": 11},
-        "kpop": {"emote": "dance-blackpink", "delay": 7},
-        "pennywise": {"emote": "dance-pennywise", "delay": 1.5},
-        "bow": {"emote": "emote-bow", "delay": 3.3},
-        "curtsy": {"emote": "emote-curtsy", "delay": 2.8},
-        "snowangel": {"emote": "emote-snowangel", "delay": 6.8},
-        "energyball": {"emote": "emote-energyball", "delay": 8.3},
-        "frog": {"emote": "emote-frog", "delay": 15},
-        "cute": {"emote": "emote-cute", "delay": 7.3},
-        "tiktok9": {"emote": "dance-tiktok9", "delay": 13},
-        "shuffle": {"emote": "dance-tiktok10", "delay": 9},
-        "pose7": {"emote": "emote-pose7", "delay": 5.3},
-        "pose8": {"emote": "emote-pose8", "delay": 4.6},
-        "casual": {"emote": "idle-dance-casual", "delay": 9.7},
-        "pose1": {"emote": "emote-pose1", "delay": 3},
-        "pose3": {"emote": "emote-pose3", "delay": 4.7},
-        "pose5": {"emote": "emote-pose5", "delay": 5},
-        "cutey": {"emote": "emote-cutey", "delay": 3.5},
-        "model": {"emote": "emote-model", "delay": 6.3},
-        "astro": {"emote": "emote-astronaut", "delay": 0},  # No delay specified, set to 0
-        "guitar": {"emote": "emote-punkguitar", "delay": 10},
-        "fashionista": {"emote": "emote-fashionista", "delay": 6},
-        "uwu": {"emote": "idle-uwu", "delay": 25},
-        "wrong": {"emote": "dance-wrong", "delay": 13},
-        "sayso": {"emote": "idle-dance-tiktok4", "delay": 16},
-        "maniac": {"emote": "emote-maniac", "delay": 5.5},
-        "enthused": {"emote": "idle-enthusiastic", "delay": 16.5},
-        "happy": {"emote": "emote-happy", "delay": 0},  # No delay specified, set to 0
-        "timejump": {"emote": "emote-timejump", "delay": 0},  # No delay specified, set to 0
-        "creepy": {"emote": "dance-creepypuppet", "delay": 10},
-        "sleigh": {"emote": "emote-sleigh", "delay": 0},  # No delay specified, set to 0
-        "singing": {"emote": "idle_singing", "delay": 11},
-        "anime": {"emote": "dance-anime", "delay": 0},  # No delay specified, set to 0
-        "hyped": {"emote": "emote-hyped", "delay": 0},  # No delay specified, set to 0
-        "jinglebell": {"emote": "dance-jinglebell", "delay": 0},  # No delay specified, set to 0
-        "snowball": {"emote": "emote-snowball", "delay": 6},
+      "blow": {"emote": "emote-headblowup", "delay": 11.667537},
+      "skate": {"emote": "emote-iceskating", "delay": 7.299156},
+      "boxer": {"emote": "emote-boxer", "delay": 5.555702},
+      "tired": {"emote": "emote-tired", "delay": 10},
+      "dance": {"emote": "dance-macarena", "delay": 12.5},
+      "loopsit": {"emote": "idle-loop-sitfloor", "delay": 10},
+      "weird": {"emote": "dance-weird", "delay": 22},
+      "laugh": {"emote": "emote-laughing", "delay": 3},
+      "kiss": {"emote": "emote-kiss", "delay": 3},
+      "wave": {"emote": "emote-wave", "delay": 10},
+      "teleport": {"emote": "emote-teleporting", "delay": 12.5},
+      "hot": {"emote": "emote-hot", "delay": 4.8},
+      "shopping": {"emote": "dance-shoppingcart", "delay": 5},
+      "greedy": {"emote": "emote-greedy", "delay": 4.8},
+      "float": {"emote": "emote-float", "delay": 9.3},
+      "yes": {"emote": "emote-yes", "delay": 10},
+      "celebrate": {"emote": "emoji-celebrate", "delay": 4},
+      "no": {"emote": "emote-no", "delay": 10},
+      "swordfight": {"emote": "emote-swordfight", "delay": 6},
+      "shy": {"emote": "emote-shy", "delay": 10},
+      "tiktok2": {"emote": "dance-tiktok2", "delay": 11},
+      "charging": {"emote": "emote-charging", "delay": 8.5},
+      "worm": {"emote": "emote-snake", "delay": 6},
+      "russian": {"emote": "dance-russian", "delay": 10.3},
+      "sad": {"emote": "emote-sad", "delay": 10},
+      "cursing": {"emote": "emoji-cursing", "delay": 2.5},
+      "flex": {"emote": "emoji-flex", "delay": 3},
+      "gagging": {"emote": "emoji-gagging", "delay": 6},
+      "tiktok8": {"emote": "dance-tiktok8", "delay": 11},
+      "kpop": {"emote": "dance-blackpink", "delay": 7},
+      "pennywise": {"emote": "dance-pennywise", "delay": 1.5},
+      "bow": {"emote": "emote-bow", "delay": 3.3},
+      "curtsy": {"emote": "emote-curtsy", "delay": 2.8},
+      "snowangel": {"emote": "emote-snowangel", "delay": 6.8},
+      "energyball": {"emote": "emote-energyball", "delay": 8.3},
+      "frog": {"emote": "emote-frog", "delay": 15},
+      "cute": {"emote": "emote-cute", "delay": 7.3},
+      "tiktok9": {"emote": "dance-tiktok9", "delay": 13},
+      "shuffle": {"emote": "dance-tiktok10", "delay": 9},
+      "pose7": {"emote": "emote-pose7", "delay": 5.3},
+      "pose8": {"emote": "emote-pose8", "delay": 4.6},
+      "casual": {"emote": "idle-dance-casual", "delay": 9.7},
+      "pose1": {"emote": "emote-pose1", "delay": 3},
+      "pose3": {"emote": "emote-pose3", "delay": 4.7},
+      "pose5": {"emote": "emote-pose5", "delay": 5},
+      "cutey": {"emote": "emote-cutey", "delay": 3.5},
+      "model": {"emote": "emote-model", "delay": 6.3},
+      "astro": {"emote": "emote-astronaut", "delay": 0},  # No delay specified, set to 0
+      "guitar": {"emote": "emote-punkguitar", "delay": 10},
+      "fashionista": {"emote": "emote-fashionista", "delay": 6},
+      "uwu": {"emote": "idle-uwu", "delay": 25},
+      "wrong": {"emote": "dance-wrong", "delay": 13},
+      "sayso": {"emote": "idle-dance-tiktok4", "delay": 16},
+      "maniac": {"emote": "emote-maniac", "delay": 5.5},
+      "enthused": {"emote": "idle-enthusiastic", "delay": 16.5},
+      "happy": {"emote": "emote-happy", "delay": 0},  # No delay specified, set to 0
+      "timejump": {"emote": "emote-timejump", "delay": 1.9},  # No delay specified, set to 0
+      "creepy": {"emote": "dance-creepypuppet", "delay": 10},
+      "sleigh": {"emote": "emote-sleigh", "delay": 9},  # No delay specified, set to 0
+      "singing": {"emote": "idle_singing", "delay": 12},
+      "anime": {"emote": "dance-anime", "delay": 8.4},  # No delay specified, set to 0
+      "hyped": {"emote": "emote-hyped", "delay": 6.7},  # No delay specified, set to 0
+      "jingle": {"emote": "dance-jinglebell", "delay": 11.8},  # No delay specified, set to 0
+      "snowball": {"emote": "emote-snowball", "delay": 6},
+      "sit": {"emote": "idle-loop-sitfloor", "delay": 22.321055},
+      "enthused": {"emote": "idle-enthusiastic", "delay": 15.941537},
+      "yes": {"emote": "emote-yes", "delay": 2.565001},
+      "pushit": {"emote": "dance-employee", "delay": 8},
+      "gift": {"emote": "emote-gift", "delay": 5.8},
+       "touch": {"emote": "dance-touch", "delay": 10.000},
+      "creepycute": {"emote": "emote-creepycute", "delay": 7.902453},
+          "kawaii": {"emote": "dance-kawai", "delay":7.9},
+         
     }
 
 
-    def _get_emote_commands_list(self):
-        emotes_list = list(self.emote_dict.keys())
-        unique_emotes = set(emotes_list)  
-        formatted_list = ', '.join(unique_emotes)
-        return f"You can use the following emotes: {formatted_list}. Just type the emote you want to use in the chat!"
-
-  
     async def send_emote_continuously(self, emote_data: dict, user_id: int) -> None:
       try:
           while user_id in self.user_loops:
@@ -147,15 +145,22 @@ class Bot(BaseBot):
           print(f"An error occurred in send_emote_continuously: {e}")
           self.user_loops.pop(user_id, None)
 
-  
-    async def on_user_move(self, user: User, pos: Position) -> None:
-      """On a user moving in the room."""
-      if user.username == "iced_yu":
-          # Offset the x-coordinate to the right by, for example, 2 units
-          adjusted_pos = Position(x=pos.x + 2, y=pos.y, z=pos.z, facing=pos.facing)
-          await self.highrise.walk_to(adjusted_pos)
-          print(adjusted_pos)
 
+    def _get_emote_commands_list(self):
+            emotes_list = list(self.emote_dict.keys())
+            unique_emotes = set(emotes_list)  # To ensure there are no duplicates
+            formatted_list = ', '.join(unique_emotes)
+            return f"You can use the following emotes: {formatted_list}. Just type the emote you want to use in the chat!"
+
+    # async def on_user_move(self, user: User, pos: Position) -> None:
+    #   """On a user moving in the room."""
+    #   if user.username == "iced_yu":
+    #       # Adjust the x-coordinate to be slightly to the right of iced_yu
+    #       x_offset = 2  # You can adjust this value as needed
+    #       new_x = pos.x + x_offset
+
+    #       # Walk to the adjusted position
+    #       await self.highrise.walk_to(Position(new_x, pos.y, pos.z, pos.facing))
 
     async def on_whisper(self, user: User, message: str) -> None:
       print(f"[WHISPER] {user.username}: {message}")
@@ -194,41 +199,6 @@ class Bot(BaseBot):
 
 
 
-      async def following_loop():
-        while True:
-            room_users = (await self.highrise.get_room_users()).content
-            user_position = None  # Initialize with a default value
-            for room_user, position in room_users:
-                if room_user.id == user.id:
-                    user_position = position
-                    break
-
-            if user_position is not None:  # Check if user_position is assigned
-                print(user_position)
-                if type(user_position) != AnchorPosition:
-                    await self.highrise.walk_to(Position(user_position.x + 1, user_position.y, user_position.z))
-            else:
-                print(f"User {user.username} not found in the room")  # Handle the case where user is not found
-
-            await asyncio.sleep(0.5)
-
-
-      if self.following_task and not self.following_task.done():
-          await self.highrise.chat("Already following someone")
-          return
-
-      self.following_task = self.highrise.tg.create_task(following_loop())
-      await self.highrise.chat(f"Following {user.username}")
-
-    async def stop_follow(self, user: User, message: str) -> None:
-      if self.following_task and not self.following_task.done():
-          self.following_task.cancel()
-          await self.highrise.chat(f"Stopping following {user.username}")
-      else:
-          await self.highrise.chat("Not following anyone")
-
-    
-
 
     async def on_chat(self, user: User, message: str) -> None:
       message = message.strip().lower()
@@ -240,10 +210,6 @@ class Bot(BaseBot):
         await self.highrise.teleport(user.id, self.user_teleport_position)
       elif message == "/vip" and user.username in vip:
         await self.highrise.teleport(user.id, self.user_teleport_position3)
-      elif message.startswith("/follow"):
-        await self.follow(user, message)
-      elif message.startswith("/stop_follow"):
-        await self.stop_follow(user, message)
 
 
 
@@ -343,35 +309,23 @@ class Bot(BaseBot):
                   }
               else:
                   # Send the emote only once if the message contains only the emote name
-                  await self.highrise.send_emote(command, user.id)
-
-logging.basicConfig(filename='bot.log', level=logging.DEBUG)
+                  await self.highrise.send_emote(command["emote"], user.id)
 
 
-app = Flask(__name__)
 
-def run():
-    app.run(host='0.0.0.0', port=8000)
+bot_file_name = "main"
+bot_class_name = "Bot"
+room_id = "65a8236a0aa6b497a9b328a8"
+bot_token = "637cc3e1dc30d3a2a377a3384a62f66220cfdf855eca608fba58c164d7e5bba0"
 
-def keep_alive():
-    t = Thread(target=run)
-    t.start()
+my_bot = BotDefinition(getattr(import_module(bot_file_name), bot_class_name)(), room_id, bot_token)
 
-if __name__ == "__main__":
-    bot_file_name = "main"
-    bot_class_name = "Bot"
-    room_id = "65a8236a0aa6b497a9b328a8"
-    bot_token = "480d69a2bc2440c9df71f24e59c6ad2e22490730511f3cc32cd0627e2bd56bbd"
-
-    my_bot = BotDefinition(getattr(import_module(bot_file_name), bot_class_name)(), room_id, bot_token)
-
-    while True:
-        try:
-            definitions = [my_bot]
-            arun(main(definitions))
-        except Exception as e:
-            logging.error(f"An exception occurred in the main loop: {e}")
-            time.sleep(2)
-
+while True:
+      try:
+          definitions = [my_bot]
+          arun(main(definitions))
+      except Exception as e:
+          print(f"An exception occourred: {e}")
+          time.sleep(2)
 
   
