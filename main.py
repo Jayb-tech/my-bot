@@ -102,9 +102,7 @@ class Bot(BaseBot):
   # Fix indentation for on_user_join method
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
-    await self.highrise.chat(
-        f"Welcome to Club Euphoria, {user.username}!  To see the list of emotes, simply type emotes in the chat."
-    )
+    print(user.usernaname)
   pos_emote_dict = {
     
     "blow": {
