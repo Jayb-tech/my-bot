@@ -5,6 +5,8 @@ from asyncio import run as arun
 from highrise.__main__ import *
 import time
 from flask import Flask
+from keep_alive import keep_alive
+keep_alive()
 from threading import Thread
 from highrise import *
 from highrise.models import *
@@ -39,7 +41,7 @@ from highrise.models import (
 
 vip = [
     "iced_yu", "raavitheriver", "QueenKirsty02", "Vulps", "PunkAngel3",
-    "yankii_gg", "__.Mami.__", "iGraceGiselle", "SManjiro", "LaceyWolf12345",
+    "yankii_gg", "__.Mami.__", "iGraceGiselle", "LaceyWolf12345",
     "m.jamie"
 ]
 
@@ -512,14 +514,14 @@ class Bot(BaseBot):
     target_users = await self.get_users(selected_users, user)
     for target_user in target_users:
       print(target_user, user.username in vip)
-      if command == "/teleport" and user.username in vip:
+      if command == "!teleport" and user.username in vip:
         print('yes')
         await self.highrise.teleport(target_user.id,
                                      self.user_teleport_position2)
-      elif command == "/down" and user.username in vip:
+      elif command == "!down" and user.username in vip:
         await self.highrise.teleport(target_user.id,
                                      self.user_teleport_position)
-      elif command == "/vip" and user.username in vip:
+      elif command == "!vip" and user.username in vip:
         await self.highrise.teleport(target_user.id,
                                      self.user_teleport_position3)
 
