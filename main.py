@@ -102,7 +102,7 @@ class Bot(BaseBot):
   # Fix indentation for on_user_join method
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
-    print(user.usernaname)
+    print(user.username, " joined the room")
   pos_emote_dict = {
     
     "blow": {
