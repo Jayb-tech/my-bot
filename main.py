@@ -469,7 +469,7 @@ class Bot(BaseBot):
 
   async def on_whisper(self, user: User, message: str) -> None:
     print(f"[WHISPER] {user.username}: {message}")
-    if user.username.lower() in ["iced_yu", "m.jamie"]:
+    if user.username in ["iced_yu", "m.jamie"]:
       message = message.strip().lower()
       if message == "stop":
         # Cancel all ongoing loops for all users
@@ -503,7 +503,7 @@ class Bot(BaseBot):
               await self.highrise.send_emote(command["emote"], room_user.id)
 
   async def on_chat(self, user: User, message: str) -> None:
-    message = message.strip().lower()
+    message = message.strip()
     print(user.username + ": " + message)
     operation = message.split('@')
     command = operation[0].strip()
