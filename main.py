@@ -624,7 +624,7 @@ class Bot(BaseBot):
 
 bot_file_name = "main"
 bot_class_name = "Bot"
-room_id = "65a8236a0aa6b497a9b328a8"
+room_id = "66320fb05046d88274b828c3"
 bot_token = "637cc3e1dc30d3a2a377a3384a62f66220cfdf855eca608fba58c164d7e5bba0"
 
 my_bot = BotDefinition(
