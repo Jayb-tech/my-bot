@@ -40,9 +40,9 @@ from highrise.models import (
 
 
 vip = [
-    "iced_yu", "raavitheriver", "QueenKirsty02", "Vulps", "PunkAngel3",
-    "yankii_gg", "__.Mami.__", "iGraceGiselle", "LaceyWolf12345",
-    "m.jamie", "ZenDeity","commitment","cordcut"
+    "iced_yu", "raavitheriver", "PunkAngel3",
+    "yankii_gg", "lushxmoon",
+    "m.jamie", "ZenDeity","commitment"
 ]
 
 class Bot(BaseBot):
@@ -75,18 +75,6 @@ class Bot(BaseBot):
         Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')))
 
       
-    
-    # users = await self.get_users(['m.jamies'], '22331')
-    # print(users)
-  # async def on_user_move(
-  #       self, user: User, destination: Position | AnchorPosition
-  #   ) -> None:
-  #     print(Position)
-  #     if Position == self.bar:
-  #         await self.highrise.send_emote("dance-tiktok10", user.id)
-          
-          
-
 
   async def get_users(self, selected_users, default_user):
     target_users = []
@@ -388,10 +376,23 @@ class Bot(BaseBot):
           "emote": "emote-creepycute",
           "delay": 7.902453
       },
-      "kawaii": {
+      "kawai": {
           "emote": "dance-kawai",
           "delay": 7.9
       },
+      "scritchy": {
+          "emote":"idle-wild",
+          "delay": 26.422824},
+      "nervous":
+      {"emote":"idle-nervous",
+      'delay': 21.714221},
+      "toilet":
+        {"emote":"idle-toilet",
+        'delay': 32.174447},
+      
+      "superpose":
+        {"emote":"emote-superpose",
+        'delay': 4.530791}
   }
 
   async def send_emote_continuously(self, emote_data: dict,
@@ -451,6 +452,89 @@ class Bot(BaseBot):
               await self.highrise.send_emote(command["emote"], room_user.id)
 
   async def on_chat(self, user: User, message: str) -> None:
+      if message.startswith("!promote"):
+          if user.username != "iced_yu":
+              await self.highrise.chat("You do not have permission to use this command.")
+              return
+
+          parts = message.split()
+          if len(parts) != 3:
+              await self.highrise.chat("Invalid promote command format.")
+              return
+
+          command, username, role = parts
+          if "@" in username:
+              username = username[1:]  # Remove '@' if present
+
+          if role.lower() not in ["moderator", "designer"]:
+              await self.highrise.chat("Invalid role, please specify a valid role.")
+              return
+
+          # Check if user is in the room
+          room_users = (await self.highrise.get_room_users()).content
+          user_id = None
+          for room_user, pos in room_users:
+              if room_user.username.lower() == username.lower():
+                  user_id = room_user.id
+                  break
+
+          if user_id is None:
+              await self.highrise.chat("User not found, please specify a valid user.")
+              return
+
+          # Promote user
+          permissions = await self.highrise.get_room_privilege(user_id)
+          setattr(permissions, role.lower(), True)
+          try:
+              await self.highrise.change_room_privilege(user_id, permissions)
+              await self.highrise.chat(f"{username} has been promoted to {role}.")
+          except Exception as e:
+              await self.highrise.chat(f"Error: {e}")
+              return
+
+      if message.startswith("!demote"):
+          if user.username != "iced_yu":
+              await self.highrise.chat("You do not have permission to use this command.")
+              return
+
+          parts = message.split()
+          if len(parts) != 3:
+              await self.highrise.chat("Invalid demote command format.")
+              return
+
+          command, username, role = parts
+          if "@" in username:
+              username = username[1:]  # Remove '@' if present
+
+          if role.lower() not in ["moderator", "designer"]:
+              await self.highrise.chat("Invalid role, please specify a valid role.")
+              return
+
+          # Check if user is in the room
+          room_users = (await self.highrise.get_room_users()).content
+          user_id = None
+          for room_user, pos in room_users:
+              if room_user.username.lower() == username.lower():
+                  user_id = room_user.id
+                  break
+
+          if user_id is None:
+              await self.highrise.chat("User not found, please specify a valid user.")
+              return
+
+          # Demote user
+          permissions = await self.highrise.get_room_privilege(user_id)
+          setattr(permissions, role.lower(), False)
+          try:
+              await self.highrise.change_room_privilege(user_id, permissions)
+              await self.highrise.chat(f"{username} has been demoted from {role}.")
+          except Exception as e:
+              await self.highrise.chat(f"Error: {e}")
+              return
+
+          
+          except Exception as e:
+              await self.highrise.chat(f"Error: {e}")
       message = message.strip()
       print(user.username + ": " + message)
       operation = message.split('@')
@@ -560,7 +644,6 @@ class Bot(BaseBot):
               else:
                   # Send the emote only once if the message contains only the emote name
                   await self.highrise.send_emote(command["emote"], user.id)
-
 
 
 
