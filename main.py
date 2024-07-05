@@ -452,6 +452,10 @@ class Bot(BaseBot):
               await self.highrise.send_emote(command["emote"], room_user.id)
 
   async def on_chat(self, user: User, message: str) -> None:
+      if message.startswith("!wallet"):
+          wallet = (await self.highrise.get_wallet()).content
+          await self.highrise.chat(f"The bot wallet contains {wallet[0].amount} {wallet[0].type}")
+          
       if message.startswith("!promote"):
           if user.username != "iced_yu":
               await self.highrise.chat("You do not have permission to use this command.")
@@ -644,7 +648,6 @@ class Bot(BaseBot):
               else:
                   # Send the emote only once if the message contains only the emote name
                   await self.highrise.send_emote(command["emote"], user.id)
-
 
 
 
