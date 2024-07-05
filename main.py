@@ -42,13 +42,14 @@ from highrise.models import (
 vip = [
     "iced_yu", "raavitheriver", "QueenKirsty02", "Vulps", "PunkAngel3",
     "yankii_gg", "__.Mami.__", "iGraceGiselle", "LaceyWolf12345",
-    "m.jamie"
+    "m.jamie", "ZenDeity","commitment","cordcut"
 ]
-
 
 class Bot(BaseBot):
 
   def __init__(self):
+    self.loop = asyncio.get_event_loop()
+
     self.user_teleport_position = Position(x=1.5,
                                            y=0.25,
                                            z=14.5,
@@ -61,22 +62,31 @@ class Bot(BaseBot):
                                             y=14.75,
                                             z=4.5,
                                             facing='FrontLeft')
+    self.bar = Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')
+
     self.user_loops = {}
-    self.position_emote_state = {
-    }  # Dictionary to track emote state per position
 
   async def on_start(self, session_metadata: SessionMetadata) -> None:
-    import asyncio
-    # asyncio.ensure_future(self.dance())
 
     print("hi im alive?")
     self.highrise.tg.create_task(
         self.highrise.teleport(
             session_metadata.user_id,
-            Position(x=13.5, y=1.0, z=6.5, facing='FrontRight')))
+        Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')))
 
+      
+    
     # users = await self.get_users(['m.jamies'], '22331')
     # print(users)
+  # async def on_user_move(
+  #       self, user: User, destination: Position | AnchorPosition
+  #   ) -> None:
+  #     print(Position)
+  #     if Position == self.bar:
+  #         await self.highrise.send_emote("dance-tiktok10", user.id)
+          
+          
+
 
   async def get_users(self, selected_users, default_user):
     target_users = []
@@ -89,65 +99,10 @@ class Bot(BaseBot):
         target_users.append(user[0])
     return target_users
 
-  # async def dance(self):
-  #   import asyncio
-  #   counter = 0
-  #   while True:
-  #     for emote in emotes:
-  #       for user in vvip:
-  #         send emote
-  #     await asyncio.sleep(1)
-  #     counter += 1
-
-  # Fix indentation for on_user_join method
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
-    print(user.username, " joined the room")
-  pos_emote_dict = {
-    
-    "blow": {
-                       "emote": "emote-headblowup",
-                       "delay": 11.667537
-                   },
-                   "skate": {
-                       "emote": "emote-iceskating",
-                       "delay": 7.299156
-                   },
-                   "boxer": {
-                       "emote": "emote-boxer",
-                       "delay": 5.555702
-                   },
-                   "tired": {
-                       "emote": "emote-tired",
-                       "delay": 10
-                   },
-                   "dance": {
-                       "emote": "dance-macarena",
-                       "delay": 12.5
-                   },
-                   "loopsit": {
-                       "emote": "idle-loop-sitfloor",
-                       "delay": 10
-                   },
-                   "weird": {
-                       "emote": "dance-weird",
-                       "delay": 22
-                   },
-                   "laugh": {
-                       "emote": "emote-laughing",
-                       "delay": 3
-                   },
-                   "kiss": {
-                       "emote": "emote-kiss",
-                       "delay": 3
-                   },
-                   "wave": {
-                       "emote": "emote-wave",
-                       "delay": 10
-                   }
-  }
+      await self.highrise.send_whisper(user.id, "Welcome to the room! Use !commands to see the list of VIP commands.")
 
-  
   emote_dict = {
       "blow": {
           "emote": "emote-headblowup",
@@ -457,19 +412,12 @@ class Bot(BaseBot):
     formatted_list = ', '.join(unique_emotes)
     return f"You can use the following emotes: {formatted_list}. Just type the emote you want to use in the chat!"
 
-  # async def on_user_move(self, user: User, pos: Position) -> None:
-  #   """On a user moving in the room."""
-  #   if user.username == "iced_yu":
-  #       # Adjust the x-coordinate to be slightly to the right of iced_yu
-  #       x_offset = 2  # You can adjust this value as needed
-  #       new_x = pos.x + x_offset
-
-  #       # Walk to the adjusted position
-  #       await self.highrise.walk_to(Position(new_x, pos.y, pos.z, pos.facing))
 
   async def on_whisper(self, user: User, message: str) -> None:
     print(f"[WHISPER] {user.username}: {message}")
-    if user.username in ["iced_yu", "m.jamie"]:
+    if message.startswith("!") and user.username in vip:
+     await self.highrise.chat(message)
+    if user.username in ["iced_yu", "m.jamie", "ZenDeity", "commitment"]:
       message = message.strip().lower()
       if message == "stop":
         # Cancel all ongoing loops for all users
@@ -503,129 +451,124 @@ class Bot(BaseBot):
               await self.highrise.send_emote(command["emote"], room_user.id)
 
   async def on_chat(self, user: User, message: str) -> None:
-    message = message.strip()
-    print(user.username + ": " + message)
-    operation = message.split('@')
-    command = operation[0].strip()
-    selected_users = [u.strip() for u in operation[1:]]
+      message = message.strip()
+      print(user.username + ": " + message)
+      operation = message.split('@')
+      command = operation[0].strip()
+      selected_users = [u.strip() for u in operation[1:]]
 
-    target_users = await self.get_users(selected_users, user)
-    for target_user in target_users:
-      print(target_user, user.username in vip)
-      if command == "!teleport" and user.username in vip:
-        print('yes')
-        await self.highrise.teleport(target_user.id,
-                                     self.user_teleport_position2)
-      elif command == "!down" and user.username in vip:
-        await self.highrise.teleport(target_user.id,
-                                     self.user_teleport_position)
-      elif command == "!vip" and user.username in vip:
-        await self.highrise.teleport(target_user.id,
-                                     self.user_teleport_position3)
+      if message.strip() == "!commands":
+          vip_commands_list = "\n".join([
+              "!teleport - Teleport to a specific location",
+              "!down - Teleport down",
+              "!vip - Teleport to a VIP area",
+              "!bar - Teleport to the bar"
+              # Add more commands as needed
+          ])
+          await self.highrise.send_whisper(user.id, f"Here are the VIP commands:\n{vip_commands_list}")
 
-    if message == "emotes":
-      emotes_list = list(self.emote_dict.keys())
-      chunk_size = 10  # This is an example, adjust the chunk size based on the game's limits
-      chunks = [
-          emotes_list[i:i + chunk_size]
-          for i in range(0, len(emotes_list), chunk_size)
-      ]
-      for chunk in chunks:
-        emote_message = ', '.join(chunk)
-        await self.highrise.chat(emote_message)
-        await asyncio.sleep(1)
+      if command == "!summon" and selected_users:
+          if user.username in vip:  # Check if the user is a VIP
+              target_username = selected_users[0]
+              # Get the position of the user who issued the command
+              current_users = await self.highrise.get_room_users()
+              issuing_user_position = None
+              target_user_id = None
 
-    elif message.lower() == "stop":
-      # Handle stop command in a case-insensitive manner
-      loop_data = self.user_loops.pop(user.id, None)
-      if loop_data is not None:
-        loop_data['loop'].cancel()
+              for current_user, pos in current_users.content:
+                  if current_user.username == user.username:
+                      if isinstance(pos, Position):
+                          issuing_user_position = pos
+                  if current_user.username == target_username:
+                      target_user_id = current_user.id
 
-    # elif message.lower().startswith("/dress") and user.username == "iced_yu":
-    #   await self.highrise.set_outfit(outfit=[
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='body-flesh',
-    #            account_bound=False,
-    #            active_palette=1),
-    #       Item(type='clothing',
-    #            amount=4,
-    #            id='hair_front-n_basic2020overshoulderpony',
-    #            account_bound=False,
-    #            active_palette=4),
-    #       Item(type='clothing',
-    #            amount=4,
-    #            id='eyebrow-n_basic2018newbrows16',
-    #            account_bound=False,
-    #            active_palette=4),
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='mouth-basic2018unimpressed',
-    #            account_bound=False,
-    #            active_palette=1),
-    #       Item(
-    #           type='clothing',
-    #           amount=1,
-    #           id='nose-n_room22019nosestud',
-    #       ),
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='shirt-n_philippineday2019filipinotop',
-    #            account_bound=False,
-    #            active_palette=-1),
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='skirt-f_gianttutu',
-    #            account_bound=False,
-    #            active_palette=-1),
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='shoes-n_starteritems2019flatswhite',
-    #            account_bound=False,
-    #            active_palette=-1),
-    #       Item(type='clothing',
-    #            amount=1,
-    #            id='eye-n_basic2018malediamondsleepy',
-    #            account_bound=False,
-    #            active_palette=1),
-    #       Item(type='clothing',
-    #            amount=3,
-    #            id='freckle-n_basic2018freckle35',
-    #            account_bound=False,
-    #            active_palette=3),
-    #       Item(type='clothing',
-    #            amount=3,
-    #            id='blush-f_blush01',
-    #            account_bound=False,
-    #            active_palette=3),
-    #       Item(type='clothing',
-    #            amount=4,
-    #            id='hair_back-n_basic2020overshoulderpony',
-    #            account_bound=False,
-    #            active_palette=4),
-    #   ])
-    else:
-      words = message.split()
-      if len(words) >= 1 and words[0] in self.emote_dict:
-        command = self.emote_dict[words[0]]
-        if "loop" in words:
-          # Check if there is already an active loop for the user
-          if user.id in self.user_loops:
-            # If there's an existing loop, cancel it before starting a new one
-            self.user_loops[user.id]['loop'].cancel()
-          # Start a new loop
-          loop_task = asyncio.create_task(
-              self.send_emote_continuously(command, user.id))
-          self.user_loops[user.id] = {'command': command, 'loop': loop_task}
-        else:
-          # Send the emote only once if the message contains only the emote name
-          await self.highrise.send_emote(command["emote"], user.id)
+              if issuing_user_position and target_user_id:
+                  # Teleport the target user to the position of the issuing user
+                  await self.highrise.teleport(target_user_id, issuing_user_position)
+                  print(f"Teleported {target_username} to {user.username}'s position")
+              else:
+                  print(f"Could not find valid positions for users: {user.username} or {target_username}")
+          else:
+              print(f"{user.username} does not have permission to use !summon")
+
+      else:
+          target_users = await self.get_users(selected_users, user)
+          for target_user in target_users:
+              if command == "!teleport" and user.username in vip:
+                  await self.highrise.teleport(target_user.id, self.user_teleport_position2)
+              elif command == "!down" and user.username in vip:
+                  await self.highrise.teleport(target_user.id, self.user_teleport_position)
+              elif command == "!vip" and user.username in vip:
+                  await self.highrise.teleport(target_user.id, self.user_teleport_position3)
+              elif command == "!bar" and user.username in vip:
+                  await self.highrise.teleport(target_user.id, self.bar)
+
+      if message == "!emotes":
+          emotes_list = list(self.emote_dict.keys())
+          chunk_size = 10  # This is an example, adjust the chunk size based on the game's limits
+          chunks = [emotes_list[i:i + chunk_size] for i in range(0, len(emotes_list), chunk_size)]
+          for chunk in chunks:
+              emote_message = ', '.join(chunk)
+              await self.highrise.send_whisper(user.id, emote_message)
+              await asyncio.sleep(1)
+
+      elif message.lower() == "!stop":
+          # Handle stop command in a case-insensitive manner
+          loop_data = self.user_loops.pop(user.id, None)
+          if loop_data is not None:
+              loop_data['loop'].cancel()
+
+      elif message.lower().startswith("/dress") and user.username == "ZenDeity":
+          await self.highrise.set_outfit(outfit=[
+              Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=1),
+              Item(type='clothing', amount=4, id='hair_front-n_basic2020overshoulderpony', account_bound=False, active_palette=4),
+              Item(type='clothing', amount=4, id='eyebrow-n_basic2018newbrows16', account_bound=False, active_palette=4),
+              Item(type='clothing', amount=1, id='mouth-basic2018unimpressed', account_bound=False, active_palette=1),
+              Item(type='clothing', amount=1, id='nose-n_room22019nosestud'),
+              Item(type='clothing', amount=1, id='shirt-n_philippineday2019filipinotop', account_bound=False, active_palette=-1),
+              Item(type='clothing', amount=1, id='skirt-f_gianttutu', account_bound=False, active_palette=-1),
+              Item(type='clothing', amount=1, id='shoes-n_starteritems2019flatswhite', account_bound=False, active_palette=-1),
+              Item(type='clothing', amount=1, id='eye-n_basic2018malediamondsleepy', account_bound=False, active_palette=1),
+              Item(type='clothing', amount=3, id='freckle-n_basic2018freckle35', account_bound=False, active_palette=3),
+              Item(type='clothing', amount=3, id='blush-f_blush01', account_bound=False, active_palette=3),
+              Item(type='clothing', amount=4, id='hair_back-n_basic2020overshoulderpony', account_bound=False, active_palette=4),
+          ])
+      else:
+          words = message.split()
+          if len(words) >= 3 and words[0] == "!emote" and words[1] in self.emote_dict:
+              emote_name = words[1]
+              mention_username = words[2].strip('@')
+
+              # Find user ID based on username
+              mention_user = await self.highrise.get_user_by_name(mention_username)
+
+              if mention_user:
+                  emote_data = self.emote_dict[emote_name]
+                  await self.highrise.send_emote(emote_data["emote"], mention_user.id)
+              else:
+                  await self.highrise.send_whisper(user.id, f"User {mention_username} not found.")
+          elif len(words) >= 1 and words[0] in self.emote_dict:
+              command = self.emote_dict[words[0]]
+              if "loop" in words:
+                  # Check if there is already an active loop for the user
+                  if user.id in self.user_loops:
+                      # If there's an existing loop, cancel it before starting a new one
+                      self.user_loops[user.id]['loop'].cancel()
+                  # Start a new loop
+                  loop_task = asyncio.create_task(self.send_emote_continuously(command, user.id))
+                  self.user_loops[user.id] = {'command': command, 'loop': loop_task}
+              else:
+                  # Send the emote only once if the message contains only the emote name
+                  await self.highrise.send_emote(command["emote"], user.id)
+
+
+
 
 
 bot_file_name = "main"
 bot_class_name = "Bot"
-room_id = "66320fb05046d88274b828c3"
-bot_token = "637cc3e1dc30d3a2a377a3384a62f66220cfdf855eca608fba58c164d7e5bba0"
+room_id = "65a8236a0aa6b497a9b328a8"
+bot_token = "24e6088cf133602810245308c100b920c4f7b270db286b3215b0f21409195130"
 
 my_bot = BotDefinition(
     getattr(import_module(bot_file_name), bot_class_name)(), room_id,
