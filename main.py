@@ -1,3 +1,4 @@
+from emote import emote
 import logging
 import asyncio
 import sys 
@@ -416,8 +417,8 @@ class Bot(BaseBot):
 
   async def on_whisper(self, user: User, message: str) -> None:
     print(f"[WHISPER] {user.username}: {message}")
-    if message.startswith("!") and user.username in vip:
-     await self.highrise.chat(message)
+    # if message.startswith("!") and user.username in vip:
+    #  await self.highrise.chat(message)
     if user.username in ["iced_yu", "m.jamie", "ZenDeity", "commitment"]:
       message = message.strip().lower()
       if message == "stop":
@@ -451,7 +452,57 @@ class Bot(BaseBot):
               room_user = item[0]
               await self.highrise.send_emote(command["emote"], room_user.id)
 
+      
+  async def handle_emote_command(self, user: User, message: str, emote_name: str):
+        # Check if the emote_name exists in the emote_dict
+        if emote_name in self.emote_dict:
+            # Access the emote information from the dictionary
+            emote_info = self.emote_dict[emote_name]
+            emote_symbol = emote_info["emote"]  # Get the emote symbol
+            modified_message = f"{emote_symbol} @{message.split('@')[1]}"
+            await emote(self, user, modified_message)
+        else:
+            await self.highrise.chat(f"Emote '{emote_name}' not found.")
+
+    
   async def on_chat(self, user: User, message: str) -> None:
+      # target_username = selected_users[0]
+      # if message == "!come" and user.username == "iced_yu" and selected_users:
+      #     current_users = await self.highrise.get_room_users()
+      #     issuing_user_position = None
+      #     target_user_id = None
+
+      #     for current_user, pos in current_users.content:
+      #         if current_user.username == user.username:
+      #             if isinstance(pos, Position):
+      #                 issuing_user_position = pos
+      #         if current_user.username == target_username:
+      #             target_user_id = current_user.id
+
+      #     if issuing_user_position and target_user_id:
+      #         # Teleport the target user to the position of the issuing user
+      #         await self.highrise.walk_to(issuing_user_position)
+                        
+      
+      if user.username in vip:
+          # Split the message to get the command and selected users
+          operation = message.split('@')
+          command = operation[0].strip()
+          selected_users = [u.strip() for u in operation[1:]]
+
+          # Handle emote commands
+          if command.startswith("!") and command[1:] in self.emote_dict:
+              emote_name = command[1:]  # Remove '!' from the command to get the emote name
+              command_info = self.emote_dict[emote_name]
+
+              # Send emote to all targeted users
+              target_users = await self.get_users(selected_users, user)
+              for target_user in target_users:
+                  await self.highrise.send_emote(command_info["emote"], target_user.id)
+
+
+
+      
       if message.startswith("!wallet"):
           wallet = (await self.highrise.get_wallet()).content
           await self.highrise.chat(f"The bot wallet contains {wallet[0].amount} {wallet[0].type}")
@@ -537,8 +588,6 @@ class Bot(BaseBot):
               return
 
           
-          except Exception as e:
-              await self.highrise.chat(f"Error: {e}")
       message = message.strip()
       print(user.username + ": " + message)
       operation = message.split('@')
@@ -606,21 +655,6 @@ class Bot(BaseBot):
           if loop_data is not None:
               loop_data['loop'].cancel()
 
-      elif message.lower().startswith("/dress") and user.username == "ZenDeity":
-          await self.highrise.set_outfit(outfit=[
-              Item(type='clothing', amount=1, id='body-flesh', account_bound=False, active_palette=1),
-              Item(type='clothing', amount=4, id='hair_front-n_basic2020overshoulderpony', account_bound=False, active_palette=4),
-              Item(type='clothing', amount=4, id='eyebrow-n_basic2018newbrows16', account_bound=False, active_palette=4),
-              Item(type='clothing', amount=1, id='mouth-basic2018unimpressed', account_bound=False, active_palette=1),
-              Item(type='clothing', amount=1, id='nose-n_room22019nosestud'),
-              Item(type='clothing', amount=1, id='shirt-n_philippineday2019filipinotop', account_bound=False, active_palette=-1),
-              Item(type='clothing', amount=1, id='skirt-f_gianttutu', account_bound=False, active_palette=-1),
-              Item(type='clothing', amount=1, id='shoes-n_starteritems2019flatswhite', account_bound=False, active_palette=-1),
-              Item(type='clothing', amount=1, id='eye-n_basic2018malediamondsleepy', account_bound=False, active_palette=1),
-              Item(type='clothing', amount=3, id='freckle-n_basic2018freckle35', account_bound=False, active_palette=3),
-              Item(type='clothing', amount=3, id='blush-f_blush01', account_bound=False, active_palette=3),
-              Item(type='clothing', amount=4, id='hair_back-n_basic2020overshoulderpony', account_bound=False, active_palette=4),
-          ])
       else:
           words = message.split()
           if len(words) >= 3 and words[0] == "!emote" and words[1] in self.emote_dict:
@@ -648,7 +682,6 @@ class Bot(BaseBot):
               else:
                   # Send the emote only once if the message contains only the emote name
                   await self.highrise.send_emote(command["emote"], user.id)
-
 
 
 bot_file_name = "main"
