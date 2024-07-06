@@ -43,7 +43,7 @@ from highrise.models import (
 vip = [
     "iced_yu", "raavitheriver", "PunkAngel3",
     "yankii_gg", "lushxmoon",
-    "m.jamie", "ZenDeity","commitment","IT_iZzie"
+    "m.jamie", "ZenDeity","commitment"
 ]
 
 class Bot(BaseBot):
@@ -466,22 +466,74 @@ class Bot(BaseBot):
 
     
   async def on_chat(self, user: User, message: str) -> None:
-      # target_username = selected_users[0]
-      # if message == "!come" and user.username == "iced_yu" and selected_users:
-      #     current_users = await self.highrise.get_room_users()
-      #     issuing_user_position = None
-      #     target_user_id = None
+      if message.lower().startswith("!tipall ") and user.username == "iced_yu":
+          parts = message.split(" ")
+          if len(parts) != 2:
+              await self.highrise.chat("Invalid command")
+              return
+          try:
+              amount = int(parts[1])
+          except ValueError:
+              await self.highrise.chat("Invalid amount")
+              return
 
-      #     for current_user, pos in current_users.content:
-      #         if current_user.username == user.username:
-      #             if isinstance(pos, Position):
-      #                 issuing_user_position = pos
-      #         if current_user.username == target_username:
-      #             target_user_id = current_user.id
+          bot_wallet = await self.highrise.get_wallet()
+          bot_amount = bot_wallet.content[0].amount
+          if bot_amount <= amount:
+              await self.highrise.chat("Not enough funds")
+              return
 
-      #     if issuing_user_position and target_user_id:
-      #         # Teleport the target user to the position of the issuing user
-      #         await self.highrise.walk_to(issuing_user_position)
+          room_users_res = await self.highrise.get_room_users()
+          users_in_room = room_users_res.content
+          num_users = len(users_in_room)
+          if num_users == 0:
+              await self.highrise.chat("No users in the room")
+              return
+
+          amount_per_user = amount // num_users
+          if amount_per_user == 0:
+              await self.highrise.chat("Amount too small to distribute")
+              return
+
+          bars_dictionary = {
+              10000: "gold_bar_10k",
+              5000: "gold_bar_5000",
+              1000: "gold_bar_1k",
+              500: "gold_bar_500",
+              100: "gold_bar_100",
+              50: "gold_bar_50",
+              10: "gold_bar_10",
+              5: "gold_bar_5",
+              1: "gold_bar_1"
+          }
+          fees_dictionary = {
+              10000: 1000,
+              5000: 500,
+              1000: 100,
+              500: 50,
+              100: 10,
+              50: 5,
+              10: 1,
+              5: 1,
+              1: 1
+          }
+
+          for user in users_in_room:
+              amount = amount_per_user
+              tip = []
+              total = 0
+              for bar in bars_dictionary:
+                  if amount >= bar:
+                      bar_amount = amount // bar
+                      amount = amount % bar
+                      for _ in range(bar_amount):
+                          tip.append(bars_dictionary[bar])
+                          total += bar + fees_dictionary[bar]
+              if total > bot_amount:
+                  await self.highrise.chat(f"Not enough funds to tip {user.username}")
+                  continue
+              for bar in tip:
+                  await self.highrise.tip_user(user.id, bar)
                         
       
       if user.username in vip:
@@ -682,8 +734,6 @@ class Bot(BaseBot):
               else:
                   # Send the emote only once if the message contains only the emote name
                   await self.highrise.send_emote(command["emote"], user.id)
-
-
 bot_file_name = "main"
 bot_class_name = "Bot"
 room_id = "65a8236a0aa6b497a9b328a8"
