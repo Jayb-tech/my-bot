@@ -43,7 +43,7 @@ from highrise.models import (
 vip = [
     "iced_yu", "raavitheriver", "PunkAngel3",
     "yankii_gg", "lushxmoon",
-    "m.jamie", "ZenDeity","commitment","IT_iZzie"
+    "m.jamie", "ZenDeity","commitment","IT_iZzie","Damn_snake"
 ]
 
 class Bot(BaseBot):
