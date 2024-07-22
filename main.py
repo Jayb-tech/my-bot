@@ -42,7 +42,7 @@ from highrise.models import (
 
 vip = [
     "iced_yu", "raavitheriver", "PunkAngel3",
-    "yankii_gg", "lushxmoon",
+    "ebrowneyegirl", "lushxmoon",
     "m.jamie", "ZenDeity","commitment","IT_iZzie","Damn_snake"
 ]
 
