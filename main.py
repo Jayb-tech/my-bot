@@ -90,7 +90,7 @@ class Bot(BaseBot):
 
   async def on_user_join(self, user: User,
                          position: Position | AnchorPosition) -> None:
-      await self.highrise.send_whisper(user.id, "Welcome to the room! Use !commands to see the list of VIP commands.")
+      # await self.highrise.send_whisper(user.id, "Welcome to the room! Use !commands to see the list of VIP commands.")
 
   emote_dict = {
       "blow": {
