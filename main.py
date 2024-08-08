@@ -49,14 +49,14 @@ vip = [
 class Bot(BaseBot):
 
   def __init__(self):
-  
+
     self.user_teleport_position = Position(x=1.5, y=0.25, z=14.5, facing='FrontRight')
     self.user_teleport_position2 = Position(x=5.5, y=10.0, z=3.5, facing='FrontRight')
     self.user_teleport_position3 = Position(x=10.5, y=14.75, z=4.5, facing='FrontLeft')
     self.bar = Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')
 
     self.user_loops = {}
-    self.room_open = False
+    
 
 
   async def on_start(self, session_metadata: SessionMetadata) -> None:
@@ -67,7 +67,7 @@ class Bot(BaseBot):
             session_metadata.user_id,
         Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')))
 
-      
+
 
   async def get_users(self, selected_users, default_user):
     target_users = []
@@ -80,14 +80,10 @@ class Bot(BaseBot):
         target_users.append(user[0])
     return target_users
 
-  async def on_user_join(self, user: User,
-         position: Position | AnchorPosition) -> None:
-  
-    if self.room_open:
-     await self.highrise.send_whisper(user.id, f"welcome to the room {user.username}!")
-    else:
-     await self.highrise.send_whisper(user.id, "Room closed.")
- 
+  async def on_user_join(self, user: User,position: Position | AnchorPosition) -> None:
+          await self.highrise.send_whisper(user.id, f"welcome to the room {user.username}!")
+
+
   emote_dict = {
       "blow": {
           "emote": "emote-headblowup",
@@ -169,7 +165,7 @@ class Bot(BaseBot):
             "emote": "dance-sexy",
             "delay": 6
         },
-      
+
       "shy": {
           "emote": "emote-shy",
           "delay": 10
@@ -391,7 +387,7 @@ class Bot(BaseBot):
       "toilet":
         {"emote":"idle-toilet",
         'delay': 32.174447},
-      
+
       "superpose":
         {"emote":"emote-superpose",
         'delay': 4.530791}
@@ -418,14 +414,6 @@ class Bot(BaseBot):
 
   async def on_whisper(self, user: User, message: str) -> None:
     print(f"[WHISPER] {user.username}: {message}")
-    if user.username in vip:
-          if message.lower() == "!open":
-              self.room_open = True
-              await self.highrise.send_whisper(user.id, "The room is now open.")
-          elif message.lower() == "!closed":
-              self.room_open = False
-              await self.highrise.send_whisper(user.id, "The room is now closed.")
-   
     if user.username in vip:
       message = message.strip().lower()
       if message == "stop":
@@ -464,7 +452,7 @@ class Bot(BaseBot):
 
 
 
-      
+
   async def on_chat(self, user: User, message: str) -> None:
       if user.username in vip:
           # Split the message to get the command and selected users
