@@ -145,10 +145,6 @@ class Bot(BaseBot):
           "emote": "emote-float",
           "delay": 9.3
       },
-      "yes": {
-          "emote": "",
-          "delay": 10
-      },
       "celebrate": {
           "emote": "emoji-celebrate",
           "delay": 4
