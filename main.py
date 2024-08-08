@@ -1,3 +1,4 @@
+from equip import equip
 from emote import emote
 import logging
 import asyncio
