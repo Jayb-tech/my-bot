@@ -43,29 +43,21 @@ from highrise.models import (
 vip = [
     "iced_yu", "raavitheriver", "PunkAngel3",
     "ebrowneyegirl", "lushxmoon",
-    "m.jamie", "ZenDeity","commitment","IT_iZzie","Damn_snake"
+    "m.jamie","commitment","IT_iZzie","Damn_snake","love_cant_relate","RayMg","FallonXOXO"
 ]
 
 class Bot(BaseBot):
 
   def __init__(self):
-    self.loop = asyncio.get_event_loop()
-
-    self.user_teleport_position = Position(x=1.5,
-                                           y=0.25,
-                                           z=14.5,
-                                           facing='FrontRight')
-    self.user_teleport_position2 = Position(x=5.5,
-                                            y=10.0,
-                                            z=3.5,
-                                            facing='FrontRight')
-    self.user_teleport_position3 = Position(x=10.5,
-                                            y=14.75,
-                                            z=4.5,
-                                            facing='FrontLeft')
+  
+    self.user_teleport_position = Position(x=1.5, y=0.25, z=14.5, facing='FrontRight')
+    self.user_teleport_position2 = Position(x=5.5, y=10.0, z=3.5, facing='FrontRight')
+    self.user_teleport_position3 = Position(x=10.5, y=14.75, z=4.5, facing='FrontLeft')
     self.bar = Position(x=15.0, y=0.25, z=2.5, facing='FrontLeft')
 
     self.user_loops = {}
+    self.room_open = False
+
 
   async def on_start(self, session_metadata: SessionMetadata) -> None:
 
@@ -89,9 +81,13 @@ class Bot(BaseBot):
     return target_users
 
   async def on_user_join(self, user: User,
-                         position: Position | AnchorPosition) -> None:
-      await self.highrise.send_whisper(user.id, "Welcome to the room! Use !commands to see the list of VIP commands.")
-
+         position: Position | AnchorPosition) -> None:
+  
+    if self.room_open:
+     await self.highrise.send_whisper(user.id, f"welcome to the room {user.username}!")
+    else:
+     await self.highrise.send_whisper(user.id, "Room closed.")
+ 
   emote_dict = {
       "blow": {
           "emote": "emote-headblowup",
@@ -154,21 +150,26 @@ class Bot(BaseBot):
           "delay": 9.3
       },
       "yes": {
-          "emote": "emote-yes",
+          "emote": "",
           "delay": 10
       },
       "celebrate": {
           "emote": "emoji-celebrate",
           "delay": 4
       },
-      "no": {
-          "emote": "emote-no",
-          "delay": 10
+      "wop": {
+          "emote": "dance-tiktok11",
+          "delay": 11
       },
       "swordfight": {
           "emote": "emote-swordfight",
           "delay": 6
       },
+      "sexy": {
+            "emote": "dance-sexy",
+            "delay": 6
+        },
+      
       "shy": {
           "emote": "emote-shy",
           "delay": 10
@@ -349,17 +350,17 @@ class Bot(BaseBot):
           "emote": "emote-snowball",
           "delay": 6
       },
-      "sit": {
-          "emote": "idle-loop-sitfloor",
+      "cutesalute": {
+          "emote": "emote-cutesalute",
           "delay": 22.321055
       },
       "enthused": {
           "emote": "idle-enthusiastic",
           "delay": 15.941537
       },
-      "yes": {
-          "emote": "emote-yes",
-          "delay": 2.565001
+      "salute": {
+          "emote":"emote-salute",
+          "delay": 3
       },
       "pushit": {
           "emote": "dance-employee",
@@ -417,9 +418,15 @@ class Bot(BaseBot):
 
   async def on_whisper(self, user: User, message: str) -> None:
     print(f"[WHISPER] {user.username}: {message}")
-    # if message.startswith("!") and user.username in vip:
-    #  await self.highrise.chat(message)
-    if user.username in ["iced_yu", "m.jamie", "ZenDeity", "commitment"]:
+    if user.username in vip:
+          if message.lower() == "!open":
+              self.room_open = True
+              await self.highrise.send_whisper(user.id, "The room is now open.")
+          elif message.lower() == "!closed":
+              self.room_open = False
+              await self.highrise.send_whisper(user.id, "The room is now closed.")
+   
+    if user.username in vip:
       message = message.strip().lower()
       if message == "stop":
         # Cancel all ongoing loops for all users
@@ -452,38 +459,13 @@ class Bot(BaseBot):
               room_user = item[0]
               await self.highrise.send_emote(command["emote"], room_user.id)
 
-      
-  async def handle_emote_command(self, user: User, message: str, emote_name: str):
-        # Check if the emote_name exists in the emote_dict
-        if emote_name in self.emote_dict:
-            # Access the emote information from the dictionary
-            emote_info = self.emote_dict[emote_name]
-            emote_symbol = emote_info["emote"]  # Get the emote symbol
-            modified_message = f"{emote_symbol} @{message.split('@')[1]}"
-            await emote(self, user, modified_message)
-        else:
-            await self.highrise.chat(f"Emote '{emote_name}' not found.")
+  # async def on_user_move(self, user: User, pos: Position) -> None:
+  #     print (f"{user.username} moved to {pos}")
 
-    
+
+
+      
   async def on_chat(self, user: User, message: str) -> None:
-      # target_username = selected_users[0]
-      # if message == "!come" and user.username == "iced_yu" and selected_users:
-      #     current_users = await self.highrise.get_room_users()
-      #     issuing_user_position = None
-      #     target_user_id = None
-
-      #     for current_user, pos in current_users.content:
-      #         if current_user.username == user.username:
-      #             if isinstance(pos, Position):
-      #                 issuing_user_position = pos
-      #         if current_user.username == target_username:
-      #             target_user_id = current_user.id
-
-      #     if issuing_user_position and target_user_id:
-      #         # Teleport the target user to the position of the issuing user
-      #         await self.highrise.walk_to(issuing_user_position)
-                        
-      
       if user.username in vip:
           # Split the message to get the command and selected users
           operation = message.split('@')
@@ -500,13 +482,10 @@ class Bot(BaseBot):
               for target_user in target_users:
                   await self.highrise.send_emote(command_info["emote"], target_user.id)
 
-
-
-      
-      if message.startswith("!wallet"):
+      if message.startswith("!wallet") and user.username in vip:
           wallet = (await self.highrise.get_wallet()).content
           await self.highrise.chat(f"The bot wallet contains {wallet[0].amount} {wallet[0].type}")
-          
+
       if message.startswith("!promote"):
           if user.username != "iced_yu":
               await self.highrise.chat("You do not have permission to use this command.")
@@ -548,7 +527,7 @@ class Bot(BaseBot):
               return
 
       if message.startswith("!demote"):
-          if user.username != "iced_yu":
+          if user.username in vip:
               await self.highrise.chat("You do not have permission to use this command.")
               return
 
@@ -587,7 +566,6 @@ class Bot(BaseBot):
               await self.highrise.chat(f"Error: {e}")
               return
 
-          
       message = message.strip()
       print(user.username + ": " + message)
       operation = message.split('@')
@@ -682,6 +660,158 @@ class Bot(BaseBot):
               else:
                   # Send the emote only once if the message contains only the emote name
                   await self.highrise.send_emote(command["emote"], user.id)
+
+          if message.startswith("!kick"):
+              if user.username in vip:
+                  pass
+              else:
+                  await self.highrise.chat("You do not have permission to use this command.")
+                  return
+              # Separate message into parts
+              parts = message.split()
+              # Check if message is valid "kick @username"
+              if len(parts) != 2:
+                  await self.highrise.chat("Invalid kick command format.")
+                  return
+              # Checks if there's a @ in the message
+              if "@" not in parts[1]:
+                  username = parts[1]
+              else:
+                  username = parts[1][1:]
+              # Check if user is in room
+              room_users = (await self.highrise.get_room_users()).content
+              for room_user, pos in room_users:
+                  if room_user.username.lower() == username.lower():
+                      user_id = room_user.id
+                      break
+              if "user_id" not in locals():
+                  await self.highrise.chat("User not found, please specify a valid user and coordinate")
+                  return
+              # Kick user
+              try:
+                  await self.highrise.moderate_room(user_id, "kick")
+              except Exception as e:
+                  await self.highrise.chat(f"{e}")
+                  return
+              # Send message to chat
+              await self.highrise.chat(f"{username} has been kicked from the room.")
+
+      if message.lower().startswith("!tipme ") and user.username=="iced_yu":
+            try:
+                amount_str = message.split(" ")[1]
+                amount = int(amount_str)
+                bars_dictionary = {
+                    10000: "gold_bar_10k",
+                    5000: "gold_bar_5000",
+                    1000: "gold_bar_1k",
+                    500: "gold_bar_500",
+                    100: "gold_bar_100",
+                    50: "gold_bar_50",
+                    10: "gold_bar_10",
+                    5: "gold_bar_5",
+                    1: "gold_bar_1"
+                }
+                fees_dictionary = {
+                    10000: 1000,
+                    5000: 500,
+                    1000: 100,
+                    500: 50,
+                    100: 10,
+                    50: 5,
+                    10: 1,
+                    5: 1,
+                    1: 1
+                }
+                # Get bot's wallet balance
+                bot_wallet = await self.highrise.get_wallet()
+                bot_amount = bot_wallet.content[0].amount
+                # Check if bot has enough funds
+                if bot_amount < amount:
+                    await self.highrise.chat("Not enough funds in the bot's wallet.")
+                    return
+                # Convert amount to bars and calculate total
+                tip = []
+                total = 0
+                for bar in sorted(bars_dictionary.keys(), reverse=True):
+                    if amount >= bar:
+                        bar_amount = amount // bar
+                        amount %= bar
+                        tip.extend([bars_dictionary[bar]] * bar_amount)
+                        total += bar_amount * bar + fees_dictionary[bar]
+                if total > bot_amount:
+                    await self.highrise.chat("Not enough funds to tip the specified amount.")
+                    return
+                # Send tip to the user who issued the command
+                for bar in tip:
+                    await self.highrise.tip_user(user.id, bar)
+                await self.highrise.chat(f"You have been tipped {amount_str}.")
+            except (IndexError, ValueError):
+                await self.highrise.chat("Invalid tip amount. Please specify a valid number.")
+
+
+      if message.lower().startswith("!tipall ") and user.username == "iced_yu":
+          parts = message.split(" ")
+          if len(parts) != 2:
+              await self.highrise.send_message(user.id, "Invalid command")
+              return
+          # Checks if the amount is valid
+          try:
+              amount = int(parts[1])
+          except:
+              await self.highrise.chat("Invalid amount")
+              return
+          # Checks if the bot has the amount
+          bot_wallet = await self.highrise.get_wallet()
+          bot_amount = bot_wallet.content[0].amount
+          if bot_amount < amount:
+              await self.highrise.chat("Not enough funds")
+              return
+          # Get all users in the room
+          room_users = await self.highrise.get_room_users()
+          # Check if the bot has enough funds to tip all users the specified amount
+          total_tip_amount = amount * len(room_users.content)
+          if bot_amount < total_tip_amount:
+              await self.highrise.chat("Not enough funds to tip everyone")
+              return
+          # Tip each user in the room the specified amount
+          for room_user, pos in room_users.content:
+              bars_dictionary = {
+                  10000: "gold_bar_10k",
+                  5000: "gold_bar_5000",
+                  1000: "gold_bar_1k",
+                  500: "gold_bar_500",
+                  100: "gold_bar_100",
+                  50: "gold_bar_50",
+                  10: "gold_bar_10",
+                  5: "gold_bar_5",
+                  1: "gold_bar_1"
+              }
+              fees_dictionary = {
+                  10000: 1000,
+                  5000: 500,
+                  1000: 100,
+                  500: 50,
+                  100: 10,
+                  50: 5,
+                  10: 1,
+                  5: 1,
+                  1: 1
+              }
+              # Convert the amount to a string of bars and calculate the fee
+              tip = []
+              remaining_amount = amount
+              for bar in bars_dictionary:
+                  if remaining_amount >= bar:
+                      bar_amount = remaining_amount // bar
+                      remaining_amount = remaining_amount % bar
+                      for i in range(bar_amount):
+                          tip.append(bars_dictionary[bar])
+                          total = bar + fees_dictionary[bar]
+              if total > bot_amount:
+                  await self.highrise.chat("Not enough funds")
+                  return
+              for bar in tip:
+                  await self.highrise.tip_user(room_user.id, bar)
 
 
 bot_file_name = "main"
