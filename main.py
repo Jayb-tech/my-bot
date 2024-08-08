@@ -451,6 +451,8 @@ class Bot(BaseBot):
 
 
   async def on_chat(self, user: User, message: str) -> None:
+      if message.startswith("/equip"):
+          await equip(self, user, message)
       if user.username in vip:
           # Split the message to get the command and selected users
           operation = message.split('@')
