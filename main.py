@@ -452,9 +452,10 @@ class Bot(BaseBot):
 
 
   async def on_chat(self, user: User, message: str) -> None:
-      if message.startswith("/remove") and username == "iced_yu":
+      if message.startswith("/remove") and user.username :
           await remove(self, user, message)
-      if message.startswith("/equip") and username == "iced_yu":
+          
+      if message.startswith("/equip") and user.username == "iced_yu":
           await equip(self, user, message)
       if user.username in vip:
           # Split the message to get the command and selected users
